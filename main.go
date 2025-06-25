@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"lenslocked/controllers"
 	"lenslocked/views"
 	"net/http"
 
@@ -37,11 +38,15 @@ func main() {
 	homeView = views.NewView("tailwindcss", "views/home.gohtml")
 	contactView = views.NewView("tailwindcss", "views/contact.gohtml")
 	faqView = views.NewView("tailwindcss", "views/faq.gohtml")
+	usersController := controllers.NewUsers()
 	var h http.Handler = http.HandlerFunc(notFound)
 	r := mux.NewRouter()
 	r.HandleFunc("/", home)
 	r.HandleFunc("/contact", contact)
 	r.HandleFunc("/faq", faq)
+
+	// By changing the last argument in the call to HandleFunc we have instructed our router that we now want it to use the New method we defined to handle any web requests for the page /signup. Because this method matches the definition of a HandlerFunc our program will accept it happily. It doesn’t matter to our router that this is a method attached to the users controller. All that matters is that the New method will accept two arguments of the type ResponseWriter and Request.
+	r.HandleFunc("/signup", usersController.New)
 	r.NotFoundHandler = h
 
 	http.ListenAndServe(":3000", r)

@@ -1,0 +1,9 @@
+# Gallery API Endpoints
+
+| Method | Path                | Description                                                                                                                                                                                                                       |
+|--------|---------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| GET    | /galleries/new      | Retrieve a form or page to create a new gallery. Like asking for a driver’s license application—you get the page to submit, but don’t create the gallery here.                              |
+| POST   | /galleries          | Create a new gallery. POSTing to this path means you want to create a gallery, providing the required information (from an HTML form, JSON, etc.). Like submitting your application and getting a license in return. |
+| GET    | /galleries/:id      | Read a single gallery by its ID (e.g., /galleries/313). Like looking up a driver’s license by its unique number.                                                                             |
+| PUT    | /galleries/:id      | Update a gallery by its ID, providing updated data. Like submitting an application to change your address on a driver’s license.                                                              |
+| DELETE | /galleries/:id      | Delete a gallery by its ID. Like requesting to delete a driver’s license by its unique number.                                                                                               |
