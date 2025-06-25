@@ -3,32 +3,10 @@ package main
 import (
 	"fmt"
 	"lenslocked/controllers"
-	"lenslocked/views"
 	"net/http"
 
 	"github.com/gorilla/mux"
 )
-
-var homeView *views.View
-var contactView *views.View
-var faqView *views.View
-
-func home(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html")
-	must(homeView.Render(w, nil))
-
-}
-
-func contact(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html")
-	must(contactView.Render(w, nil))
-
-}
-
-func faq(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html")
-	must(faqView.Render(w, nil))
-}
 
 func notFound(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
@@ -41,15 +19,14 @@ func notFound(w http.ResponseWriter, r *http.Request) {
 // our program will accept it happily. It doesn’t matter to our router that this is a method attached to the users controller.
 // All that matters is that the New method will accept two arguments of the type ResponseWriter and Request.
 func main() {
-	homeView = views.NewView("tailwindcss", "views/home.gohtml")
-	contactView = views.NewView("tailwindcss", "views/contact.gohtml")
-	faqView = views.NewView("tailwindcss", "views/faq.gohtml")
+	staticController := controllers.NewStatic()
+
 	usersController := controllers.NewUsers()
 	var h http.Handler = http.HandlerFunc(notFound)
 	r := mux.NewRouter()
-	r.HandleFunc("/", home).Methods("GET")
-	r.HandleFunc("/contact", contact).Methods("GET")
-	r.HandleFunc("/faq", faq).Methods("GET")
+	r.HandleFunc("/", staticController.Home.ServeHTTP).Methods("GET")
+	r.HandleFunc("/contact", staticController.Contact.ServeHTTP).Methods("GET")
+	r.HandleFunc("/faq", staticController.Faq.ServeHTTP).Methods("GET")
 	r.HandleFunc("/signup", usersController.New).Methods("GET")
 	r.HandleFunc("/signup", usersController.Create).Methods("POST")
 	r.NotFoundHandler = h
