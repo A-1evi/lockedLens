@@ -24,9 +24,9 @@ func main() {
 	usersController := controllers.NewUsers()
 	var h http.Handler = http.HandlerFunc(notFound)
 	r := mux.NewRouter()
-	r.HandleFunc("/", staticController.Home.ServeHTTP).Methods("GET")
-	r.HandleFunc("/contact", staticController.Contact.ServeHTTP).Methods("GET")
-	r.HandleFunc("/faq", staticController.Faq.ServeHTTP).Methods("GET")
+	r.Handle("/", staticController.Home).Methods("GET")
+	r.Handle("/contact", staticController.Contact).Methods("GET")
+	r.Handle("/faq", staticController.Faq).Methods("GET")
 	r.HandleFunc("/signup", usersController.New).Methods("GET")
 	r.HandleFunc("/signup", usersController.Create).Methods("POST")
 	r.NotFoundHandler = h
