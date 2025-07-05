@@ -3,9 +3,18 @@ package main
 import (
 	"fmt"
 	"lenslocked/controllers"
+	"lenslocked/models"
 	"net/http"
 
 	"github.com/gorilla/mux"
+)
+
+const (
+	host     = "localhost"
+	port     = 5432
+	username = "postgres"
+	password = "alankar01"
+	dbname   = "lenslocked_dev"
 )
 
 func notFound(w http.ResponseWriter, r *http.Request) {
@@ -19,9 +28,15 @@ func notFound(w http.ResponseWriter, r *http.Request) {
 // our program will accept it happily. It doesn’t matter to our router that this is a method attached to the users controller.
 // All that matters is that the New method will accept two arguments of the type ResponseWriter and Request.
 func main() {
+	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, username, password, dbname)
+	us, err := models.NewUserService(psqlInfo)
+	if err != nil {
+		panic(err)
+	}
+	defer us.Close()
+	us.AutoMigrate()
 	staticController := controllers.NewStatic()
-
-	usersController := controllers.NewUsers()
+	usersController := controllers.NewUsers(us)
 	var h http.Handler = http.HandlerFunc(notFound)
 	r := mux.NewRouter()
 	r.Handle("/", staticController.Home).Methods("GET")
